@@ -1,0 +1,138 @@
+// Standalone stage logic; the editor supplies the spx framework.
+var (
+    state string
+    score int
+    best int
+    status string
+    feet float64
+    velocity float64
+    grounded bool
+    speed float64
+    distance float64
+    obstacleX [2]float64
+    obstacleSize [2]float64
+)
+
+func resetRun() {
+    state = "ready"
+    score = 0
+    feet = 0
+    velocity = 0
+    grounded = true
+    speed = 300
+    distance = 0
+    obstacleX = [2]float64{960, 1640}
+    obstacleSize = [2]float64{40, 50}
+    status = "SPACE: start / jump, R: reset"
+}
+
+func collided() bool {
+    for i := 0; i < 2; i++ {
+        if 160 < obstacleX[i]+obstacleSize[i] &&
+            200 > obstacleX[i] && feet < obstacleSize[i] {
+            return true
+        }
+    }
+    return false
+}
+
+func finishRun() {
+    state = "game_over"
+    if score > best {
+        best = score
+    }
+    status = "GAME OVER - R: reset"
+}
+
+func updateRun(dt float64) {
+    if state != "running" || dt <= 0 || dt != dt {
+        return
+    }
+    if collided() {
+        finishRun()
+        return
+    }
+    if dt > 0.05 {
+        dt = 0.05
+    }
+    for dt > 0 {
+        step := dt
+        if step > 1.0/120.0 {
+            step = 1.0/120.0
+        }
+        dt -= step
+        if !grounded {
+            feet += velocity*step - 900*step*step
+            velocity -= 1800*step
+            if feet <= 0 && velocity <= 0 {
+                feet = 0
+                velocity = 0
+                grounded = true
+            }
+        }
+        accelTime := step
+        if speed+10*step > 550 {
+            accelTime = (550-speed)/10
+        }
+        travel := speed*accelTime + 5*accelTime*accelTime
+        speed += 10*accelTime
+        travel += speed*(step-accelTime)
+        distance += travel
+        score = int(distance/10)
+        for i := 0; i < 2; i++ {
+            obstacleX[i] -= travel
+        }
+        if collided() {
+            finishRun()
+            return
+        }
+        for i := 0; i < 2; i++ {
+            if obstacleX[i]+obstacleSize[i] <= 0 {
+                other := 1-i
+                gap := speed*1.5 + 40
+                if gap < 600 {
+                    gap = 600
+                }
+                obstacleX[i] = obstacleX[other]+obstacleSize[other]+gap
+                if obstacleX[i] < 960 {
+                    obstacleX[i] = 960
+                }
+            }
+        }
+    }
+}
+
+onStart => {
+    resetRun()
+    for {
+        waitNextFrame
+        updateRun deltaTime
+        broadcastAndWait "render"
+    }
+}
+
+onKey KeySpace, => {
+    if state == "ready" {
+        state = "running"
+        status = "SPACE: jump"
+    } else if state == "running" && grounded {
+        velocity = 600
+        grounded = false
+    }
+}
+
+onKey KeyR, => {
+    resetRun()
+}
+
+onClick => {
+    if state == "game_over" {
+        resetRun()
+    } else if state == "ready" {
+        state = "running"
+        status = "SPACE / CLICK: jump"
+    } else if grounded {
+        velocity = 600
+        grounded = false
+    }
+}
