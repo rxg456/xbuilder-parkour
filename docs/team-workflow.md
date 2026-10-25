@@ -1,61 +1,57 @@
-# 三人协作与 PR 流程
+# 团队协作与 PR 流程
 
-## 来源与分工
+## AI 辅助开发
 
-本原型由三个 AI agent 辅助生成 player、world、game 及测试，
-主 agent 补充入口、配置、CI 和文档。经用户确认账号持有人授权，代理使用
-对应账号的 SSH 密钥推送，并按模块设置提交作者；这不表示三位成员独立编写或已完成人工审核。
-成员仍需实际审核、测试和完善，个人贡献以真实修改及评审记录为准。
+项目代码包含 AI 辅助实现。团队要求由三位成员实际参与需求分析、
+使用 AI 开发、检查生成代码、测试和评审，而不是用工具数量或提交作者数量
+代替人的协作。本文列出建议责任，不证明成员已完成相应工作。
+个人贡献以实际修改、测试结果和 PR 评审记录为准。
 
-| 成员 | 模块 | 分支 | 人工审核重点 |
+## 建议分工
+
+| 成员 | 核心模块 | 网页适配责任 | 验证重点 |
 | --- | --- | --- | --- |
-| rxg456 | 玩家物理与测试 | `feature/player-v2` | 跳跃手感、落地、禁止连跳、异常时间步 |
-| autoops-dev | 世界、障碍与测试 | `feature/world-v2` | 障碍间距、速度递增、回收、碰撞范围 |
-| jesko-road | 游戏状态、集成与文档 | `feature/game-v2` | 计分、结束、重开、集成和交付材料 |
+| rxg456 | 玩家物理与测试 | 原生舞台逻辑 | 跳跃、落地、碰撞、计分及状态切换 |
+| autoops-dev | 世界、障碍与测试 | 角色、地图和资源 | 动画、视口、障碍回收、显示与碰撞一致性 |
+| jesko-road | 游戏状态与集成 | 项目打包和交付说明 | 导入、重开、集成验证、文档及演示视频 |
 
-## 安全与登录
+## 实际协作记录
 
-之前暴露的私钥应撤销；用户已确认本地密钥已更换并授权使用。
-私钥内容不写入仓库、文档或日志，不修改全局 Git 配置。
+每位成员在自己的工作中使用 AI 后，应在对应 PR 中记录：
 
-每位成员在自己的设备或隔离登录环境中使用本人合法凭据。
-提交前查看 `git var GIT_AUTHOR_IDENT`，确认作者身份准确；GitHub 登录和 Git 作者
-是两套信息，仅切换 SSH 凭据不会自动改变 commit 作者。
+- 解决的需求、本人检查和修改的内容，以及 AI 辅助的范围。
+- 执行的测试、结果和仍未验证的限制。
+- 关联任务或 PR，以及对其他成员代码的评审和反馈。
 
-SSH 可用于 Git 推送，不能创建 PR。PR 需要成员网页登录或 GitHub CLI 授权，
-不把 token 写进项目。当前尚未创建 PR。
+只列姓名、设置提交作者或划分三个分支，不足以证明三人共同开发。
+不要补写未发生的修改、测试、评审或协作记录。
 
-## 三个 PR 的提交顺序
+## PR 流程
 
-三个分支采用依赖链，分别只新增对应模块。创建 PR 时选用下面的 base，
-不要直接把后两个分支都对比 main，否则会包含前置模块。
-按玩家、世界、集成顺序审核合并；前置 PR 合并后再将后续 PR 的 base 改为 main，
-并核对差异，必要时更新分支。为避免 squash/rebase 后重复提交，
-前置分支建议使用保留提交的 merge 方式。不要向 main 直接推送。
+首轮玩家、世界和集成 PR 已合并。网页适配分支分别从同一主干建立，
+各自只包含对应文件，PR 的 base 均为 `main`：
 
-| PR | 纳入文件 | 初始 base |
+| PR | 分支 | 纳入文件 |
 | --- | --- | --- |
-| 玩家 | `go.mod`、`.gitignore`、`internal/player/` | `main` |
-| 世界 | `internal/world/` | `feature/player-v2` |
-| 集成 | `internal/game/`、`cmd/`、`spx/`、`.github/`、`README.md`、`docs/` | `feature/world-v2` |
+| 网页逻辑 | `feature/web-logic` | `web-native/main.spx` |
+| 网页渲染 | `feature/web-rendering` | `web-native/Squirrel.spx`、`Track.spx`、`assets/` |
+| 网页交付 | `feature/web-delivery` | 项目元数据、缩略图、项目包、README 和文档 |
 
-已推送分支可通过 GitHub 网页选择 base/head 创建 PR。
-若使用已登录的 GitHub CLI，可执行：
+三个 PR 可以同时创建，需在说明中互相关联。逻辑与渲染代码组合后才构成
+完整游戏，不能把单一分支的核心测试通过视为网页项目验收。
+由另一位成员审核，按逻辑、渲染、交付顺序合并到 `main`。
+合并后从主干重新导入项目并复验，后续修改也通过分支与 PR 提交。
 
-```powershell
-gh pr create --base main --head feature/player-v2 --title "feat: player jumping and physics"
-gh pr create --base feature/player-v2 --head feature/world-v2 --title "feat: obstacle generation and collision"
-gh pr create --base feature/world-v2 --head feature/game-v2 --title "feat: game state and spx integration"
-```
+## 当前验证
 
-以上 PR 命令尚未执行。PR 说明实现目的、测试和待验证项，并链接本文件的来源说明，
-请另一位成员审核后合并。后续修复也走分支和 PR，保留真实开发记录。
-此次为用户确认的分支重建，旧提交保存在本地 `archive/pre-v2`；
-删除旧远程分支不意味着彻底清除 GitHub 中的旧提交。
+Go 核心测试和原生脚本类型检查已通过。用户已反馈视口修正后的
+XBuilder 项目可以游玩；这不是三位成员分别完成验收的记录。
+碰撞边界、动画尺寸、低帧率、反复重开和导出后重新导入仍需逐项测试，
+并保存实际结果。
 
 ## 提交清单
 
-- 三位成员的真实 commit、PR URL、审核与后续修改记录。
+- 各成员实际使用 AI 开发的修改、commit、PR URL、测试与评审记录。
 - 源代码、运行说明、架构与分工文档。
 - XBuilder/spx 实际运行验证，确认目标议题和参赛组要求。
 - 实际录制的 demo 视频及播放方式，当前尚未录制。

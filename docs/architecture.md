@@ -21,7 +21,7 @@
 | `spx/main.spx` | 按键、舞台监视器、几何线框绘制（待运行验证） | game、spx |
 | `.github/workflows/test.yml` | PR 核心测试、静态检查和终端演示（待远程触发） | Go 工具链 |
 
-模块负责人、来源与审核流程见 `team-workflow.md`。
+建议责任分工、AI 使用说明与评审流程见 `team-workflow.md`。
 
 ```mermaid
 flowchart LR
@@ -88,5 +88,6 @@ Ready 和 GameOver 不更新场景，且不能跳跃。GameOver 后必须先 Res
 已在本机执行 `go test -cover ./...` 和 `go vet ./...`，均通过。
 player、world、game 语句覆盖率分别为 95.2%、97.9%、100%。
 `go test -race ./...` 因当前 CGO 未启用无法运行；Linux CI 尚未触发。
-原生引擎画面和 XBuilder 云端导入尚未验证，没有已创建的 PR 或 demo 视频。
-人类负责人、审核与提交证据要求见 `team-workflow.md`。
+本地 spx v2 引擎窗口仍未验证；网页端另有独立的 spx v3 适配项目，
+用户已反馈其视口修正版可以游玩。首轮 PR 已合并，demo 视频尚未完成。
+各成员的实际开发、测试与评审记录要求见 `team-workflow.md`。
