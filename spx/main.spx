@@ -1,0 +1,61 @@
+import (
+    "math"
+    "time"
+    "github.com/rxg456/xbuilder-parkour/internal/game"
+)
+
+var (
+    model *game.Game
+    score int
+    best int
+    status string
+    lastTick time.Time
+)
+
+onStart => {
+    model = game.New(42)
+    status = "SPACE: start / jump, R: restart"
+    lastTick = time.Now()
+    for {
+        now := time.Now()
+        // Bound elapsed time after focus loss instead of advancing a whole pause.
+        dt := math.Min(now.Sub(lastTick).Seconds(), 0.05)
+        lastTick = now
+        model.Update(dt)
+        score = model.Score
+        best = model.BestScore
+        if model.State == game.GameOver {
+            status = "GAME OVER - R: restart"
+        } else if model.State == game.Running {
+            status = "SPACE: jump"
+        }
+
+        // Core coordinates are left-based/Y-up; spx draws around stage center.
+        debugDrawLine -480, -170, 480, -170, HSB(150, 80, 55)
+        debugDrawRect -300, model.Player.Y-138, 40, 64, HSB(210, 80, 90)
+        for obstacle <- model.World.Obstacles {
+            debugDrawRect obstacle.X+obstacle.Width/2-480,
+                obstacle.Height/2-170, obstacle.Width, obstacle.Height,
+                HSB(12, 80, 90)
+        }
+        wait 1.0/120.0
+    }
+}
+
+onKey KeySpace, => {
+    if model != nil {
+        if model.State == game.Ready {
+            model.Start()
+        } else {
+            model.Jump()
+        }
+    }
+}
+
+onKey KeyR, => {
+    if model != nil {
+        model.Restart()
+        lastTick = time.Now()
+        status = "SPACE: start / jump, R: restart"
+    }
+}
