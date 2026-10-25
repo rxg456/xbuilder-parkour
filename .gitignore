@@ -1,0 +1,14 @@
+# Local credentials must never enter the repository.
+.env
+.env.*
+*.pem
+*.key
+id_rsa*
+id_ed25519*
+
+# Build products.
+*.exe
+coverage.out
+spx/xgo_autogen*.go
+spx/gop_autogen*.go
+spx/.spx/
