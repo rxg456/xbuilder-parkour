@@ -1,0 +1,28 @@
+var currentAnimation string
+
+onStart => {
+    setSize 0.06
+    setXYpos -150, -104
+    show
+    currentAnimation = "Idle"
+    animate "Idle", true
+}
+
+onMsg "render", => {
+    // The editor's native 480x360 viewport displays logical units at half scale.
+    setXYpos -150, feet/2-104
+    show
+    desired := "Idle"
+    if state == "game_over" {
+        desired = "Fall"
+    } else if !grounded {
+        desired = "Jump"
+    } else if state == "running" {
+        desired = "Walk"
+    }
+    if desired != currentAnimation {
+        stopAnimation currentAnimation
+        currentAnimation = desired
+        animate desired, desired == "Walk" || desired == "Idle"
+    }
+}

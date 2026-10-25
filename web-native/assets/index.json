@@ -1,0 +1,85 @@
+{
+    "backdrops": [
+        {
+            "x": 240,
+            "y": 180,
+            "bitmapResolution": 1,
+            "name": "grass",
+            "path": "grass.svg",
+            "builder_id": "F1iflyFmOG5vIPQ6cHI5e",
+            "imageWidth": 480,
+            "imageHeight": 360
+        }
+    ],
+    "backdropIndex": 0,
+    "map": {
+        "width": 480,
+        "height": 360,
+        "mode": "fillRatio"
+    },
+    "run": {
+        "width": 480,
+        "height": 360
+    },
+    "physics": false,
+    "stretchMode": true,
+    "autoSetCollisionLayer": true,
+    "camera": {
+        "on": ""
+    },
+    "maxFPS": 60,
+    "fontPreferences": [
+        "default"
+    ],
+    "builder_spriteOrder": [
+        "parkour-track",
+        "Rxudg8J-J24ms_aPB9-Yj"
+    ],
+    "builder_soundOrder": [
+        "iwRJSTwtDnOBuyhi25Eie",
+        "E8fXLxILjSNFamKT9_Jur"
+    ],
+    "zorder": [
+        "Track",
+        "Squirrel",
+        {
+            "type": "monitor",
+            "name": "score",
+            "target": "",
+            "val": "getVar:score",
+            "label": "Score",
+            "mode": 1,
+            "x": -220,
+            "y": 150,
+            "visible": true,
+            "color": 3447003,
+            "builder_id": "parkour-score"
+        },
+        {
+            "type": "monitor",
+            "name": "best",
+            "target": "",
+            "val": "getVar:best",
+            "label": "Best",
+            "mode": 1,
+            "x": -80,
+            "y": 150,
+            "visible": true,
+            "color": 3066993,
+            "builder_id": "parkour-best"
+        },
+        {
+            "type": "monitor",
+            "name": "status",
+            "target": "",
+            "val": "getVar:status",
+            "label": "Controls",
+            "mode": 1,
+            "x": -220,
+            "y": 110,
+            "visible": true,
+            "color": 3447003,
+            "builder_id": "parkour-status"
+        }
+    ]
+}

@@ -1,0 +1,27 @@
+onStart => {
+    hide
+}
+
+onMsg "render", => {
+    eraseAll
+    penUp
+    setPenColor HSB(25, 60, 40)
+    setPenSize 7
+    setXYpos -240, -124
+    penDown
+    setXYpos 240, -124
+    penUp
+    // Render the logical 960-wide world at half scale in the native viewport.
+    for i := 0; i < 2; i++ {
+        setPenColor HSB(12, 80, 75)
+        setPenSize 1
+        y := 0.5
+        for y < obstacleSize[i]/2 {
+            setXYpos obstacleX[i]/2-240, -120+y
+            penDown
+            setXYpos (obstacleX[i]+obstacleSize[i])/2-240, -120+y
+            penUp
+            y++
+        }
+    }
+}
