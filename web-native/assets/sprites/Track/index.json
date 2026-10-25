@@ -1,0 +1,24 @@
+{
+    "heading": 90,
+    "x": 0,
+    "y": 0,
+    "size": 1,
+    "rotationStyle": "none",
+    "visible": false,
+    "isDraggable": false,
+    "physicsMode": "no",
+    "costumeIndex": 0,
+    "builder_id": "parkour-track",
+    "costumes": [
+        {
+            "name": "pen",
+            "path": "pen.svg",
+            "x": 374.5,
+            "y": 374.5,
+            "bitmapResolution": 1,
+            "imageWidth": 749,
+            "imageHeight": 749,
+            "builder_id": "parkour-track-costume"
+        }
+    ]
+}
