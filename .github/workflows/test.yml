@@ -1,0 +1,27 @@
+name: Core Tests
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.22.x'
+          cache: false
+      - name: Check formatting
+        run: test -z "$(gofmt -l internal cmd)"
+      - name: Static checks
+        run: go vet ./...
+      - name: Unit and integration tests
+        run: go test -race -cover ./...
+      - name: Headless demonstration
+        run: go run ./cmd/simulate -seconds 30

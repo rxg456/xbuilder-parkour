@@ -1,0 +1,44 @@
+{
+    "map": {
+        "width": 960,
+        "height": 540
+    },
+    "zorder": [
+        {
+            "type": "monitor",
+            "name": "score",
+            "target": "",
+            "val": "getVar:score",
+            "label": "Score",
+            "mode": 1,
+            "x": 20,
+            "y": 20,
+            "visible": true,
+            "color": 3447003
+        },
+        {
+            "type": "monitor",
+            "name": "best",
+            "target": "",
+            "val": "getVar:best",
+            "label": "Best",
+            "mode": 1,
+            "x": 180,
+            "y": 20,
+            "visible": true,
+            "color": 3066993
+        },
+        {
+            "type": "monitor",
+            "name": "status",
+            "target": "",
+            "val": "getVar:status",
+            "label": "Controls",
+            "mode": 1,
+            "x": 20,
+            "y": 60,
+            "visible": true,
+            "color": 3447003
+        }
+    ]
+}
