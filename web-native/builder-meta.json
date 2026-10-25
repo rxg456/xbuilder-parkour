@@ -1,0 +1,6 @@
+{
+    "type": "game",
+    "displayName": "Squirrel Parkour",
+    "description": "A standalone two-dimensional parkour prototype.",
+    "instructions": "SPACE or click: start/jump. R: reset. After game over, click to reset."
+}
